@@ -13,10 +13,11 @@
     "url": "https://github.com/Couchfriends/game-skeleton.git"
   },
   "files": [
-    "bin/",
+    "build/",
     "src/",
     "LICENSE",
     "package.json",
+    "gruntfile.json",
     "README.md"
   ],
   "devDependencies": {

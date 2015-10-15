@@ -9,7 +9,7 @@ module.exports = function(grunt) {
             },
             build: {
                 files: {
-                    'bin/game.js': [
+                    'build/game.js': [
                         'src/js/utils/pixi.js',
                         'src/js/Game.js',
                         'src/js/core/Element.js',
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 src: ['**'],
-                dest: 'bin/assets/',
+                dest: 'build/assets/',
                 cwd: 'src/assets/',
                 expand: true
             }
