@@ -24,61 +24,17 @@
  */
 
 /**
- * Global Element for all in game objects. Every object should extend from this
- * class.
+ * Global Tower Element for all towers. This is an example how to implement a
+ * sprite to the scene/game.
  * @constructor
  */
-Game.Element = function (that) {
+Game.TowerSlow = function () {
 
-    that.name = this.name || 'element';
+    Game.TowerBasic.call(this);
 
-    that.anchor.set(.5);
-
-    that._renderWebGLOrg = that._renderWebGL;
-
-    that._renderWebGL = function() {
-        this._renderWebGLOrg.apply(this, arguments);
-        this.update();
-    };
-
-    that.update = function() {
-        this.rotation += .1;
-    }
+    // E.g.: this.texture = PIXI.loader.resources['assets/images/ship.png'].texture;
 
 };
 
-//Game.Element.prototype.constructor = Game.Element;
-//
-//Game.Element.prototype.init = function () {
-//
-//
-//    this.prototype = Object.create(this.super.prototype);
-//    console.log(this.name, this);
-//    this.super.call(this);
-//
-//};
-//
-//Game.Element.prototype.update = function (renderer) {
-//
-//    console.log('update');
-//    return true;
-//
-//};
-//
-//Game.Element.prototype._renderWebGL = function (renderer) {
-//
-//    if (this.super.prototype._renderWebGL.call(this, renderer)) {
-//        this.update(renderer);
-//    }
-//
-//};
-//
-//Game.Element.prototype.renderCanvas = function (renderer) {
-//
-//    if (!this.super.prototype.renderCanvas.call(this, renderer)) {
-//        return false;
-//    }
-//
-//    this.update(renderer);
-//
-//};
+Game.TowerSlow.prototype = Object.create(Game.TowerBasic.prototype);
+Game.TowerSlow.prototype.constructor = Game.TowerSlow;
