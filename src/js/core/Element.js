@@ -30,20 +30,31 @@
  */
 Game.Element = function (that) {
 
-    that.name = this.name || 'element';
+    that.name = that.name || 'element';
+
+    that.scene = that.scene || 'game';
 
     that.anchor.set(.5);
+
+    that._renderCanvasOrg = that._renderCanvas;
+
+    that._renderCanvas = function() {
+        this._renderCanvasOrg.apply(this, arguments);
+        this.update.call(this);
+    };
 
     that._renderWebGLOrg = that._renderWebGL;
 
     that._renderWebGL = function() {
         this._renderWebGLOrg.apply(this, arguments);
-        this.update();
+        this.update.call(this);
     };
 
-    that.update = function() {
-        this.rotation += .1;
-    }
+    that.update = that.update || function () { };
+
+    that.add = that.add || function () {
+        Game.scenes[this.scene].addChild(this);
+    };
 
 };
 

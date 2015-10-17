@@ -28,13 +28,15 @@
  * sprite to the scene/game.
  * @constructor
  */
-Game.TowerSlow = function () {
+Game.Tower = function () {
 
-    Game.TowerBasic.call(this);
+    PIXI.Sprite.call(this);
 
-    // E.g.: this.texture = PIXI.loader.resources['assets/images/ship.png'].texture;
+    this.name = 'tower';
+
+    Game.Element(this);
 
 };
 
-Game.TowerSlow.prototype = Object.create(Game.TowerBasic.prototype);
-Game.TowerSlow.prototype.constructor = Game.TowerSlow;
+Game.Tower.prototype = Object.create(PIXI.Sprite.prototype);
+Game.Tower.prototype.constructor = Game.Tower;

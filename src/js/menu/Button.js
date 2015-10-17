@@ -28,15 +28,33 @@
  * sprite to the scene/game.
  * @constructor
  */
-Game.TowerBasic = function () {
+Game.Button = function (text) {
 
     PIXI.Sprite.call(this);
 
-    this.name = 'tower';
+    text = text || false;
+
+    this.name = 'button';
+
+    this.scene = 'menu';
+
+    this.texture = PIXI.loader.resources['assets/images/ui/button-normal.png'].texture;
+
+    if (text) {
+        var style = {
+            font : '36px Arial',
+            fill : '#ffffff'
+        };
+
+        var text = new PIXI.Text(text, style);
+        text.anchor.set(.5);
+
+        this.addChild(text);
+    }
 
     Game.Element(this);
 
 };
 
-Game.TowerBasic.prototype = Object.create(PIXI.Sprite.prototype);
-Game.TowerBasic.prototype.constructor = Game.TowerBasic;
+Game.Button.prototype = Object.create(PIXI.Sprite.prototype);
+Game.Button.prototype.constructor = Game.Button;
