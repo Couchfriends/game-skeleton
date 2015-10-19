@@ -24,21 +24,57 @@
  */
 Game.Menu = {
 
+
+    initialized: false,
+
+    /**
+     * Window where information can be put
+     */
+    window: {},
+
     init: function() {
 
+        if (this.initialized == true) {
+            return this.setup();
+        }
         var assets = [
             'assets/images/ui/button-normal.png',
-            'assets/images/ui/button-active.png'
+            'assets/images/ui/button-active.png',
+            'assets/audio/effects/button-hover.ogg',
+            'assets/audio/effects/button-activate.ogg',
+            'assets/images/ui/button-close.png',
+            'assets/images/ui/window-background.png'
         ];
         Game.load(assets, this.setup.bind(this));
     },
 
     setup: function() {
 
-        var play = new Game.Button('Play');
-        play.position.x = Game.settings.centerX;
-        play.position.y = 50;
+        Game.clearScene('menu');
+
+        var top = 50;
+        var play = new Game.Button({
+            label: 'Play'
+        });
+        play.position.x = Game.settings.center.x;
+        play.position.y = top;
         play.add();
+
+        top += 55;
+
+        var credits = new Game.Button({
+            label: 'Credits'
+        });
+        credits.position.x = Game.settings.center.x;
+        credits.position.y = top;
+        credits.activate = function() {
+            Game.Menu.window.show('Credits\n\nMathieu de Ruiter\nwww.couchfriends.com');
+        };
+        credits.add();
+
+        this.window = new Game.Window('window');
+        this.window.add();
+
         this.show();
     },
 

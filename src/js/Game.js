@@ -24,6 +24,14 @@ var Game = {
          */
         width: 1920,
         height: 1080,
+        /**
+         * Calculated center position of the game. Can be used to automatically
+         * place objects and reposition them if the resolution changes.
+         */
+        center: {
+            x: 0,
+            y: 0
+        },
         render: {
             autoResize: true
         }
@@ -41,9 +49,6 @@ var Game = {
             return false;
         }
 
-        this.settings.centerX = this.settings.width / 2;
-        this.settings.centerY = this.settings.height / 2;
-
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
         this._renderer = PIXI.autoDetectRenderer(
             this.settings.width,
@@ -58,15 +63,15 @@ var Game = {
         this.scenes.loading = new PIXI.Container(); // Loading scene
         this.scenes.game.visible = this.scenes.loading.visible = this.scenes.menu.visible = true;
 
-        this.Menu.init();
-
         this.resize();
+        this.Menu.init();
         this.update();
 
     },
 
     /**
-     * Callback when screen resolution or orientation changed.
+     * Callback when screen resolution or orientation changed. Keeps the
+     * original aspect ratio and resized and position the canvas.
      */
     resize: function () {
 
@@ -74,7 +79,7 @@ var Game = {
             this.settings.width,
             this.settings.height
         );
-        // Resize to maximum resolution
+        // Resize to maximum resolution. @todo check settings in localStorage
         var widthToHeight = this.settings.width / this.settings.height;
 
         var newWidth = window.innerWidth;
@@ -92,6 +97,11 @@ var Game = {
             this._renderer.view.style.width = newWidth + 'px';
             this._renderer.view.style.height = newHeight + 'px';
         }
+
+        this.settings.center = {
+            x: this.settings.width / 2,
+            y: this.settings.height / 2
+        };
 
         this._renderer.view.style.marginTop = -(newHeight / 2) + 'px';
         this._renderer.view.style.marginLeft = -(newWidth / 2) + 'px';
@@ -140,13 +150,29 @@ var Game = {
 
     },
 
+    clearScene: function (scene) {
+
+        if (typeof this.scenes[scene] === 'undefined') {
+            return;
+        }
+        var scene = this.scenes[scene];
+        for (var i = scene.children.length - 1; i >= 0; i--) {
+            scene.removeChild(scene.children[i]);
+        }
+
+    },
+
     /**
-     * Set the scene to render
+     * Set and show a scene
      */
     showScene: function (scene) {
 
         scene = scene || 'game';
+        for (var key in this.scenes) {
+            this.scenes[key].visible = false;
+        }
         this.scene = this.scenes[scene];
+        this.scene.visible = true;
 
     }
 
