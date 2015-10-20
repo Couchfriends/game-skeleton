@@ -29323,6 +29323,7 @@
             this.data = new Howl({
                 id: id,
                 src: this.url,
+                html5: true,
                 onload: this._boundComplete,
                 onloaderror: this._boundOnError
             });

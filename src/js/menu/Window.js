@@ -39,7 +39,7 @@ Game.Window = function (content) {
     this.name = 'window';
 
     this.position.x = Game.settings.center.x;
-    this.position.y = Game.settings.center.y;
+    this.position.y = (Game.settings.height * .1) + 250;
 
     this.scene = 'menu';
 
@@ -96,7 +96,6 @@ Game.Window.prototype.constructor = Game.Window;
 Game.Window.prototype.show = function (content) {
 
     this.position.x = Game.settings.center.x;
-    this.position.y = Game.settings.center.y;
     if (content) {
         this.content.text = content;
     }

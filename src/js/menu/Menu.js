@@ -51,7 +51,7 @@ Game.Menu = {
             {url: 'assets/images/ui/checkbox-checked.png'},
             {url: 'assets/images/ui/checkbox-unchecked.png'},
             {url: 'assets/images/ui/window-background.png'},
-            {url: 'assets/audio/music/Prop - Morning All.mp3', id: 'music'}
+            {url: 'assets/audio/music/Prop - Vagity.mp3', id: 'music', key: 'background'}
         ];
         Game.load(assets, this.setup.bind(this));
     },
@@ -111,7 +111,7 @@ Game.Menu = {
 
     show: function () {
 
-        Game.backgroundMusic = PIXI.loader.resources['assets/audio/music/Prop - Morning All.mp3'].data;
+        Game.backgroundMusic = PIXI.loader.resources['background'].data;
         Game.backgroundMusic.play();
         Game.state = 'run';
         Game.showScene('menu');

@@ -99,6 +99,7 @@ var Game = {
             console.warn('PIXI not found.');
             return false;
         }
+        this.settings.load();
 
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
         this._renderer = PIXI.autoDetectRenderer(
@@ -109,14 +110,13 @@ var Game = {
         document.body.appendChild(this._renderer.view);
         window.addEventListener('resize', Game.resize.bind(this));
 
-        this.scenes.menu = new PIXI.Container(); // Menu
-        this.scenes.game = new PIXI.Container(); // In game
-        this.scenes.loading = new PIXI.Container(); // Loading scene
-        this.scenes.game.visible = this.scenes.loading.visible = this.scenes.menu.visible = true;
-
-        this.settings.load();
-
         this.resize();
+
+        for (var key in this.scenes) {
+            this.scenes[key] = new PIXI.Container();
+            this.scenes[key].visible = true;
+        }
+
         this.Menu.init();
         this.update();
 
