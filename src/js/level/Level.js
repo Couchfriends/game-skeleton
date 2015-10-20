@@ -22,42 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+Game.Level = {
 
-/**
- * Global Element for all in game objects. Every object should extend from this
- * class.
- * @constructor
- */
-Game.Element = function (that) {
 
-    that.name = that.name || 'element';
+    initialized: false,
 
-    that.scene = that.scene || 'game';
+    availableLevels: [
 
-    that.anchor.set(.5);
+    ],
 
-    that._renderCanvasOrg = that._renderCanvas;
+    init: function() {
 
-    that._renderCanvas = function() {
-        this._renderCanvasOrg.apply(this, arguments);
-        this.update.call(this);
-    };
+        if (this.initialized == true) {
+            return this.show();
+        }
+        var assets = [
+        ];
+        Game.load(assets, this.setup.bind(this));
+    },
 
-    that._renderWebGLOrg = that._renderWebGL;
+    setup: function() {
 
-    that._renderWebGL = function() {
-        this._renderWebGLOrg.apply(this, arguments);
-        this.update.call(this);
-    };
+        Game.clearScene('game');
+        this.show();
+    },
 
-    that.update = that.update || function () { };
+    show: function () {
 
-    that.add = that.add || function () {
-        Game.scenes[this.scene].addChild(this);
-    };
+        Game.state = 'run';
+        Game.showScene('game');
 
-    that.hide = that.hide || function() {
-        this.visible = false;
+    },
+
+    play: function (level) {
+
+        Game.clearScene('game');
+
     }
-
 };

@@ -32,7 +32,7 @@ Game.Window = function (content) {
 
     PIXI.Sprite.call(this);
 
-    this.content = content || 'empty window';
+    this.content = content || false;
 
     this.interactive = true;
 
@@ -79,6 +79,7 @@ Game.Window = function (content) {
     button.position.y = -250;
 
     button.activate = function() {
+        Game.Button.prototype.activate.call(this);
         this.parent.visible = false;
     };
 
@@ -96,7 +97,9 @@ Game.Window.prototype.show = function (content) {
 
     this.position.x = Game.settings.center.x;
     this.position.y = Game.settings.center.y;
-    this.content.text = content;
+    if (content) {
+        this.content.text = content;
+    }
     this.visible = true;
 
 };

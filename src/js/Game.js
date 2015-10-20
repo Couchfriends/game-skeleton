@@ -15,7 +15,8 @@ var Game = {
     state: 'run', // Current stage of the game e.g. 'run'|'pause'
 
     /**
-     * Options for the game
+     * (Default) options for the game. Some settings might be overridden by the
+     * settings in localStorage.
      */
     settings: {
         /**
@@ -24,6 +25,9 @@ var Game = {
          */
         width: 1920,
         height: 1080,
+        sound: true,
+        music: true,
+        particles: false,
         /**
          * Calculated center position of the game. Can be used to automatically
          * place objects and reposition them if the resolution changes.
@@ -32,10 +36,57 @@ var Game = {
             x: 0,
             y: 0
         },
-        render: {
-            autoResize: true
+        save: function(setting, value) {
+            if (typeof Game.settings[setting] != 'undefined' && typeof value == 'boolean') {
+                Game.settings[setting] = value;
+                if (window.localStorage != null) {
+                    window.localStorage.setItem('GameSettings.' + setting, value);
+                }
+                if (setting == 'sound' || setting == 'music') {
+                    for (var key in PIXI.loader.resources) {
+                        var resource = PIXI.loader.resources[key];
+                        if (resource.id != null && resource.id == setting) {
+                            resource.data.mute(!value);
+                        }
+                    }
+                    // Continue or start playing the background music if the setting changed
+                    if (setting == 'music' && Game.backgroundMusic != null &&
+                        Game.backgroundMusic._sounds != null && value == true &&
+                        Game.backgroundMusic._sounds[0]._paused == true) {
+                        Game.backgroundMusic.play();
+                    }
+                }
+            }
+        },
+        load: function() {
+            if (window.localStorage == null) {
+                return false;
+            }
+            for (var key in Game.settings) {
+                if (typeof Game.settings[key] == 'boolean') {
+                    var savedSetting = window.localStorage.getItem('GameSettings.' + key);
+                    if (savedSetting == null) {
+                        continue;
+                    }
+                    if (savedSetting == 'false') {
+                        savedSetting = false;
+                    }
+                    else if (savedSetting == 'true') {
+                        savedSetting = true;
+                    }
+                    Game.settings.save(key, savedSetting);
+                }
+            }
         }
     },
+    /**
+     * Background music
+     */
+    backgroundMusic: {},
+    /**
+     * List with key => object of game assets including textures and sounds
+     */
+    assets: {},
 
     /**
      * List with all objects
@@ -62,6 +113,8 @@ var Game = {
         this.scenes.game = new PIXI.Container(); // In game
         this.scenes.loading = new PIXI.Container(); // Loading scene
         this.scenes.game.visible = this.scenes.loading.visible = this.scenes.menu.visible = true;
+
+        this.settings.load();
 
         this.resize();
         this.Menu.init();
@@ -108,13 +161,6 @@ var Game = {
 
     },
 
-    setup: function () {
-
-        var tower = new Game.TowerSlow();
-        this.state = 'run';
-        tower.add();
-    },
-
     /**
      * The absolute main render. Requests another animation frame and execture
      * the current this.state() function.
@@ -127,12 +173,39 @@ var Game = {
 
     },
 
+    /**
+     * Loads an list of assets.
+     * @param assets list with asset of an list with objects containing the
+     * following params:
+     * asset.url string link to the file
+     * asset.id string type of the asset. E.g. sound|music|texture. Used for
+     * settings.
+     * @param callback
+     */
     load: function (assets, callback) {
 
         this.state = 'loading';
-        PIXI.loader.add(assets);
+        if (assets.length == 0) {
+            if (typeof callback == 'function') {
+                callback();
+            }
+            return;
+        }
+
+        PIXI.loader.on('progress', function (loader, loadedResources) {
+            if (loadedResources.id == 'sound' && Game.settings.sound == false) {
+                loadedResources.data.mute();
+            }
+            if (loadedResources.id == 'music' && Game.settings.music == false) {
+                loadedResources.data.mute();
+            }
+        });
+
+        for (var i = 0; i < assets.length; i++) {
+            var asset = assets[i];
+            PIXI.loader.add(asset);
+        }
         PIXI.loader.load(function () {
-            Game.state = 'run';
             if (typeof callback == 'function') {
                 callback();
             }
